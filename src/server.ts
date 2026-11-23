@@ -5,14 +5,21 @@ import app from "./app.js";
 
 import { connectDB } from "./config/database.js";
 
+import {
+  connectAuthDB,
+  disconnectAuthDB,
+} from "./config/auth-database.js";
+
 import { env } from "./config/env.js";
 
 const startServer = async (): Promise<void> => {
   try {
-    // Connect MongoDB before accepting requests
+    // Connect application database
     await connectDB();
 
-    // Create HTTP server
+    // Connect Better Auth database
+    await connectAuthDB();
+
     const server = createServer(app);
 
     server.listen(env.PORT, () => {
@@ -22,11 +29,10 @@ const startServer = async (): Promise<void> => {
       console.info(`Environment: ${env.NODE_ENV}`);
       console.info(`Port: ${env.PORT}`);
       console.info(`API: http://localhost:${env.PORT}/api/v1`);
-      console.info(`Health: http://localhost:${env.PORT}/api/v1/health`);
+      console.info(`Auth: http://localhost:${env.PORT}/api/auth`);
       console.info("----------------------------------");
     });
 
-    // Graceful shutdown
     const shutdown = (signal: NodeJS.Signals): void => {
       console.info(`${signal} received. Shutting down...`);
 
@@ -45,8 +51,11 @@ const startServer = async (): Promise<void> => {
           process.exitCode = 1;
         }
 
-        void mongoose.disconnect().finally(() => {
-          console.info("MongoDB disconnected");
+        void Promise.all([
+          mongoose.disconnect(),
+          disconnectAuthDB(),
+        ]).finally(() => {
+          console.info("Database connections closed");
           console.info("SalonBook server stopped");
         });
       });
@@ -55,11 +64,13 @@ const startServer = async (): Promise<void> => {
     process.once("SIGINT", () => shutdown("SIGINT"));
 
     process.once("SIGTERM", () => shutdown("SIGTERM"));
-
   } catch (error) {
     console.error("Failed to start SalonBook:", error);
 
-    await mongoose.disconnect();
+    await Promise.allSettled([
+      mongoose.disconnect(),
+      disconnectAuthDB(),
+    ]);
 
     process.exitCode = 1;
   }

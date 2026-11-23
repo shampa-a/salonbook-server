@@ -15,6 +15,16 @@ const envSchema = z.object({
   CLIENT_URL: z.string().url(),
 
   MONGODB_URI: z.string().min(1, "MongoDB URI is required"),
+
+  BETTER_AUTH_SECRET: z
+    .string()
+    .min(32, "Better Auth secret must contain at least 32 characters"),
+
+  BETTER_AUTH_URL: z.string().url(),
+
+  GOOGLE_CLIENT_ID: z.string().optional(),
+
+  GOOGLE_CLIENT_SECRET: z.string().optional(),
 });
 
 const result = envSchema.safeParse(process.env);
@@ -29,4 +39,4 @@ if (!result.success) {
   process.exit(1);
 }
 
-export const env = result.data; 
+export const env = result.data;

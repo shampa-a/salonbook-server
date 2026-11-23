@@ -2,7 +2,11 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 
+import { toNodeHandler } from "better-auth/node";
+
 import { env } from "./config/env.js";
+
+import { auth } from "./lib/auth.js";
 
 import apiRoutes from "./routes/index.js";
 
@@ -14,23 +18,26 @@ import { errorHandler } from "./middleware/error.middleware.js";
 
 const app = express();
 
-// Disable framework identification
 app.disable("x-powered-by");
 
 // Security headers
 app.use(helmet());
 
-// CORS configuration
+// CORS
 app.use(
   cors({
     origin: env.CLIENT_URL,
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  })
+  }),
 );
 
 // Request logging
 app.use(requestLogger);
+
+// Better Auth handler
+// Must be mounted before express.json().
+app.all("/api/auth/*splat", toNodeHandler(auth));
 
 // Request body parsing
 app.use(express.json({ limit: "1mb" }));
@@ -39,7 +46,7 @@ app.use(
   express.urlencoded({
     extended: false,
     limit: "1mb",
-  })
+  }),
 );
 
 // Root endpoint
@@ -54,7 +61,7 @@ app.get("/", (_req, res) => {
 // API routes
 app.use("/api/v1", apiRoutes);
 
-// Handle unknown routes
+// Unknown routes
 app.use(notFoundHandler);
 
 // Centralized error handling
