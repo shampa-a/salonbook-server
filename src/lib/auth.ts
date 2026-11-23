@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 
 import { authDatabase } from "../config/auth-database.js";
+
 import { env } from "../config/env.js";
 
 const googleEnabled = Boolean(
