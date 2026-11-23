@@ -137,23 +137,15 @@ const serviceSchema = new Schema<IService>(
       },
     },
 
-    discountPrice: {
-      type: Number,
-      default: null,
-      min: [0, "Discount price cannot be negative"],
-      validate: {
-        validator: function (this: IService, value: number | null) {
-          if (value === null || value === undefined) {
-            return true;
-          }
-
-          return Number.isInteger(value) && value < this.price;
-        },
-        message:
-          "Discount price must be a whole number and lower than regular price",
-      },
-    },
-
+  discountPrice: {
+  type: Number,
+  default: null,
+  min: [0, "Discount price cannot be negative"],
+  validate: {
+    validator: Number.isInteger,
+    message: "Discount price must be a whole BDT amount",
+  },
+},
     currency: {
       type: String,
       enum: ["BDT"],
