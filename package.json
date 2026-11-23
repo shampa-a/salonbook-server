@@ -1,0 +1,41 @@
+{
+  "name": "salonbook-server",
+  "version": "1.0.0",
+  "description": "SalonBook Multi-Tenant SaaS Backend",
+  "main": "dist/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "seed:categories": "tsx src/scripts/seed-categories.ts"
+  },
+  "keywords": [
+    "salonbook",
+    "salon",
+    "booking",
+    "saas"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "helmet": "^8.3.0",
+    "jose": "^6.2.18",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.12.3",
+    "stripe": "^23.2.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^26.6.6",
+    "nodemon": "^3.1.14",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
