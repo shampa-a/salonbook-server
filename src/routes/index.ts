@@ -3,16 +3,17 @@ import { Router } from "express";
 import healthRoutes from "./health.routes.js";
 import categoryRoutes from "./category.routes.js";
 import authRoutes from "./auth.routes.js";
+import staffRoutes from "./staff.routes.js";
+import salonRoutes from "./salon.routes.js";
+import adminRoutes from "./admin.routes.js";
 
 const router = Router();
 
-// Health check
 router.use("/health", healthRoutes);
-
-// Categories
 router.use("/categories", categoryRoutes);
-
-// Authentication-related protected APIs
 router.use("/auth", authRoutes);
+router.use("/salons", salonRoutes);
+router.use("/staff", staffRoutes);
+router.use("/admin", adminRoutes);
 
 export default router;
